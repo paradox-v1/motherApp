@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Warm bakery theme. Large, friendly defaults for an easy-to-read phone app. */
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #fffaf3;
+  color: #44403c;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Prevent text from getting tiny on Samsung browsers. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Bigger base tap targets everywhere. */
+button,
+a,
+input,
+select,
+textarea {
+  font-size: 1.0625rem;
+}
+
+/* Respect the phone's safe areas (notch / nav bar). */
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 5.5rem);
+}
