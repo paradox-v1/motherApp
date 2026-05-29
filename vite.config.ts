@@ -5,6 +5,9 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vite.dev/config/
 export default defineConfig({
+  // On GitHub Pages the app is served from /<repo-name>/. The deploy workflow
+  // sets VITE_BASE to that path; locally it stays at the root "/".
+  base: process.env.VITE_BASE ?? "/",
   plugins: [
     react(),
     tailwindcss(),
@@ -19,7 +22,10 @@ export default defineConfig({
         background_color: "#fffaf3",
         display: "standalone",
         orientation: "portrait",
-        start_url: "/",
+        // Relative so the installed app works whether hosted at the domain
+        // root or under a /<repo>/ subpath (GitHub Pages).
+        start_url: ".",
+        scope: ".",
         icons: [
           {
             src: "icon-192.png",
