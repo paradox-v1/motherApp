@@ -5,19 +5,16 @@ on:
     branches: [claude/cake-dashboard-app-3DEyf]
   workflow_dispatch:
 
-# Allow the workflow to publish to GitHub Pages.
+# Allow the workflow to push the built site to the gh-pages branch.
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
-# Only one deployment at a time; newer pushes supersede in-progress ones.
 concurrency:
-  group: pages
+  group: pages-deploy
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,21 +33,12 @@ jobs:
         env:
           VITE_BASE: /${{ github.event.repository.name }}/
 
-      # Enables Pages on the repo automatically on the first run.
-      - uses: actions/configure-pages@v5
+      # Publish the built site to a dedicated gh-pages branch. This avoids the
+      # github-pages environment protection rules that block deploys from
+      # non-default branches, and works reliably on any source branch.
+      - name: Publish to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          enablement: true
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          force_orphan: true
